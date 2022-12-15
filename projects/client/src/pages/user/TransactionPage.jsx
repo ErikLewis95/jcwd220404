@@ -23,6 +23,28 @@ export const TransactionPage = () => {
             </Box>
           </Box>
           <Box className="body" bgColor="white" h={"1750px"} w={"390px"} />
+          <VStack
+  mt={"250px"}
+  divider={<StackDivider borderColor='gray.200' />}
+  spacing={"10px"}
+  align='stretch'
+  >
+  <Button textColor={"black"} h='40px'>
+    My Address
+  </Button>
+  <Button ml={"10px"} textColor={"black"} h='40px' as="button" >
+    Privacy and Policy
+  </Button>
+  <Button ml={"10px"} textColor={"black"} h='40px' as="button" >
+    Help
+  </Button>
+  <Button ml={"10px"} textColor={"black"} h='40px' as="button" >
+    Account Settings
+  </Button>
+  <Box margin={"auto"} alignItems={"center"} bgColor={"ButtonShadow"}>
+  Versi Aplikasi - 2.5.0    
+  </Box>
+  </VStack>
           <Box className="footer" w={"390px"} pos="fixed" bottom={"35px"}>
             <NavbarComp />
           </Box>
@@ -31,3 +53,4 @@ export const TransactionPage = () => {
     </div>
   );
 };
+            
