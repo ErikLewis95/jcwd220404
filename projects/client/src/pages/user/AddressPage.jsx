@@ -24,8 +24,6 @@ export const AddressPage = () => {
   const [city, setCity] = useState([]);
   const [selectedProvince, setSelectedProvince] = useState(0);
   const [selectedCity, setSelectedCity] = useState(0);
-  // selectProvince(selectedProvince);
-  // selectCity(selectedCity);
   const inputAddressLine = useRef("");
   const inputCity = useRef("");
   const inputProvince = useRef("");

@@ -7,14 +7,15 @@ const category = db.Category;
 module.exports = {
   create: async (req, res) => {
     try {
-      const { productName, distributor, description } = req.body;
+      const { productName, distributor, description, qty } = req.body;
 
-      if (!productName && !distributor && !description) throw "required field";
+      if (!productName && !distributor && !description && !qty) throw "required field";
 
       await product.create({
         productName,
         distributor,
         description,
+        qty,
       });
       res.status(200).send({
         message: "Successfully Added",
@@ -42,13 +43,13 @@ module.exports = {
   findAll: async (req, res) => {
     try {
       const users = await product.findAll({
-        attributes: [
-          "id",
-          "productName",
-          "distributor",
-          "description",
-          "picture",
-        ],
+        // attributes: [
+        //   "id",
+        //   "productName",
+        //   "distributor",
+        //   "description",
+        //   "picture",
+        // ],
       });
       res.status(200).send(users);
     } catch (err) {
@@ -59,7 +60,7 @@ module.exports = {
   findAllCategory: async (req, res) => {
     try {
       const users = await category.findAll({
-        attributes: ["id", "categoryName", "categoryPicture"],
+        // attributes: ["id", "categoryName", "categoryPicture"],
       });
       res.status(200).send(users);
     } catch (err) {
@@ -82,13 +83,14 @@ module.exports = {
 
   findBy: async (req, res) => {
     try {
-      const { productName, distributor, description } = req.query;
+      const { productName, distributor, description, qty } = req.query;
       const users = await product.findAll({
         where: {
           [Op.or]: {
             productName: productName ? productName : "",
             distributor: distributor ? distributor : "",
             description: description ? description : "",
+            qty: qty ? qty : "",
           },
         },
         raw: true,
@@ -164,13 +166,14 @@ module.exports = {
 
   update: async (req, res) => {
     try {
-      const { productName, distributor, description } = req.body;
+      const { productName, distributor, description,qty } = req.body;
 
       await product.update(
         {
           productName,
           distributor,
           description,
+          qty,
         },
         {
           where: { id: req.params.id },

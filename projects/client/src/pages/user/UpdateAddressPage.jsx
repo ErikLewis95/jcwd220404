@@ -24,8 +24,9 @@ import {
   import OnlyFreshLogo from "../../OnlyFreshLogo.png";
 
   export const UpdateAddressPage = () => {
-    // const { id } = useSelector((state) => state.addressSlice.value);
-    const [data, setData] = useState();
+    const { id } = useSelector((state) => state.userSlice.value);
+    const { data } = useSelector((state) => state.addressSlice.value);
+    // const [data, setData] = useState();
     const inputAddressLine = useRef("");
     const inputCity = useRef("");
     const inputProvince = useRef("");
@@ -69,12 +70,13 @@ import {
   
     const getData = async () => {
       try {
-        const result = await Axios.get(
-          `${process.env.REACT_APP_API_BASE_URL}/address/findById/${params.id}`
+        const result = await Axios.post(
+          `${process.env.REACT_APP_API_BASE_URL}/address/findById/${id}`,
+          {id:params.id}
         );
         console.log(result.data);
-        setData(result.data);
-        // dispatch(syncData(result.data));
+        // setData(result.data);
+        dispatch(syncData(result.data));
       } catch (err) {
         console.log(err);
       }
@@ -82,7 +84,7 @@ import {
   
     useEffect(() => {
       getData();
-    }, []);
+    }, [id]);
   
     return (
       <div>

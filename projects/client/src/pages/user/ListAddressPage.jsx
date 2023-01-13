@@ -18,8 +18,8 @@ import {
   EditIcon,
   HamburgerIcon,
 } from "@chakra-ui/icons";
-import {  useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {  useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { syncData } from "../../redux/addressSlice";
@@ -27,17 +27,17 @@ import { syncData } from "../../redux/addressSlice";
 export const ListAddressPage = () => {
   // const [data, setData] = useState([]);
   const { data } = useSelector((state) => state.addressSlice.value);
+  const { id } = useSelector((state) => state.userSlice.value);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const params = useParams();
+  console.log(params);
   
-  const toAddAddress = () => {
-    navigate("/account/address/addAddress");
-  };
 
   const getData = async () => {
     try {
       const result = await Axios.get(
-        `${process.env.REACT_APP_API_BASE_URL}/address/addressById`
+        `${process.env.REACT_APP_API_BASE_URL}/address/addressById/${id}`
       );
       console.log(result.data);
       // setData(result.data);
@@ -49,7 +49,7 @@ export const ListAddressPage = () => {
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [id]);
 
   const onDelete = async (id) => {
     try {
@@ -63,14 +63,18 @@ export const ListAddressPage = () => {
     }
   };
 
-  const toUpdate = (id) => {
-    navigate(`/account/address/updateAddress/${id}`);
+  const toAddAddress = () => {
+    navigate(`/account/address/addAddress/${id}`);
+  };
+
+  const toUpdate = (addressId) => {
+    navigate(`/account/address/updateAddress/${addressId}`);
   };
 
   return (
     <div>
       <Center>
-        <Box>
+        <Box w={"390px"} h={"844px"} bgColor="white">
           <Box
             className="header"
             w={"390px"}
@@ -95,7 +99,7 @@ export const ListAddressPage = () => {
             </Box>
             <Box margin={"auto"} alignItems={"baseline"} textColor="#285430">
               <Text as={"b"} fontSize="xl">
-                MY ADDRESS
+             Account
               </Text>
             </Box>
           </Box>
@@ -103,20 +107,15 @@ export const ListAddressPage = () => {
             mt={"80px"}
             className="body"
             bgColor="white"
-            h={"740px"}
+            h={"1750px"}
             w={"390px"}
+            pt="10" 
           >
             {data?.map((item) => {
               return (
                 <Box
-                  ml="3px"
-                  mr="3px"
-                  mt="5px"
-                  pl="8px"
-                  pr="8px"
-                  border={"2px"}
-                  borderColor={"#285430"}
-                  borderRadius="xl"
+                  border={"2px"} borderColor={"black"}
+            p="4" m="4" 
                 >
                   <Flex justifyContent={"space-between"}>
                     <Text color={"#285430"}>{item.receiverName}</Text>

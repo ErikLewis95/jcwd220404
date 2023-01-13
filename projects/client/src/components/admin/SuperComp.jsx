@@ -1,11 +1,8 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { logoutAdmin } from "../../redux/adminSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  Button,
-  useDisclosure,
-  useColorMode,
-  Box,
+import { Box,
   Text,
   FormControl,
   FormLabel,
@@ -20,10 +17,6 @@ import {
   TabPanels,
   TabPanel,
   Avatar,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
   TableContainer,
   Table,
   Thead,
@@ -31,37 +24,31 @@ import {
   Th,
   Tbody,
   Td,
+  Button,
+  Center, useDisclosure, Popover, PopoverContent, PopoverArrow, PopoverBody, PopoverFooter, ButtonGroup, Grid, GridItem, Badge
 } from "@chakra-ui/react";
-import Axios from "axios";
-import { ChevronDownIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import Swal from "sweetalert2";
-import { Formik, Form, ErrorMessage, Field } from "formik";
 import * as Yup from "yup";
-import { logoutAdmin } from "../../redux/adminSlice";
+import Swal from "sweetalert2";
+import Axios from "axios";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 
 export const SuperComp = () => {
-  const [edit, setEdit] = useState({});
   const [data, setData] = useState([]);
   const [data2, setData2] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowComfirmPassword] = useState(false);
   const { username } = useSelector((state) => state.adminSlice.value);
-  const { colorMode, toggleColorMode } = useColorMode();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onClose, onToggle } = useDisclosure();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const onLogout = () => {
-    dispatch(logoutAdmin());
-    localStorage.removeItem("tokenSuper");
-    navigate("/loginAdmin");
-  };
-
   const registerSchema = Yup.object().shape({
     username: Yup.string()
       .required("Name is a required field")
       .min(5, "Name min. 5 characters"),
-    email: Yup.string().email().required("Email is a required field"),
+    email: Yup.string()
+      .email("Email must be valid")
+      .required("Email is a required field"),
     password: Yup.string()
       .required("Password is a required field")
       .min(8, "Password min. 8 characters"),
@@ -79,6 +66,7 @@ export const SuperComp = () => {
           title: "Oooops ...",
           text: "make sure password and confirm password match",
           timer: 2000,
+          width: "370",
           customClass: {
             container: "my-swal",
           },
@@ -93,6 +81,7 @@ export const SuperComp = () => {
         title: "Good Job",
         text: `${result.data.massage}`,
         timer: 2000,
+        width: "370",
         customClass: {
           container: "my-swal",
         },
@@ -101,12 +90,19 @@ export const SuperComp = () => {
       Swal.fire({
         icon: "error",
         title: "Oops...",
+        width: "370",
         text: `${err.response.data}`,
         customClass: {
           container: "my-swal",
         },
       });
     }
+  };
+
+  const onLogout = () => {
+    dispatch(logoutAdmin());
+    localStorage.removeItem("tokenSuper");
+    navigate("/loginAdmin");
   };
 
   const getData = async () => {
@@ -140,37 +136,80 @@ export const SuperComp = () => {
   useEffect(() => {
     getBranch();
   }, []);
-
+  
   return (
     <div>
       <Box
-        mt={"100px"}
-        className="body"
-        bgColor="white"
-        h={"1750px"}
+        className="header"
         w={"390px"}
+        h={"80px"}
+        bgColor="#E5D9B6"
+        display={"flex"}
+        justifyContent="space-between"
+        pt={"10px"}
+        pl={"1px"}
+        pos="fixed"
+        top={"0"}
+        zIndex={"2"}
       >
-        <Box>
-          <Box display={"flex"} justifyContent="space-between">
-            <Text>Branch Admin Management</Text>
-            <Menu>
-              <MenuButton as={"button"} rightIcon={<ChevronDownIcon />}>
-                <Avatar name={username}></Avatar>
-              </MenuButton>
-              <MenuList>
-                <MenuItem as={"button"} onClick={onLogout}>
-                  Logout
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          </Box>
+        <Box margin={"auto"} alignItems={"center"} textColor="#285430">
+          <Text as={"b"} fontSize="xl">
+            SUPER ADMIN
+          </Text>
+        </Box>
+        <Box
+          mt={"70px"}
+          className="body"
+          bgColor="white"
+          h={"844px"}
+          w={"390px"}
+          pos="fixed"
+        >
+          <Center>
+            <Text mt="5" as="b" color="#285430">
+              Branch Admin Management
+            </Text>
+          </Center>
+          <Grid
+            h="100px"
+            templateRows="repeat(2, 1fr)"
+            templateColumns="repeat(5, 1fr)"
+            gap={"10px"}
+          >
+            <GridItem m={"auto"} rowSpan={2} colSpan={1}>
+              <Avatar
+                bgColor={"gray.500"}
+                display={"flex"}
+                size={"lg"}
+                src={`http://localhost:8000/upload/PIMG-167280588303621324.jpeg`}
+                ml="8"
+                mt="3"
+                mb="3"
+              ></Avatar>
+            </GridItem>
+            <GridItem colSpan={1}>
+              <Badge
+                mt="8"
+                textColor={"#285430"}
+                fontSize="md"
+                ml={"10px"}
+                as="b"
+              >
+                {username}
+              </Badge>
+            </GridItem>
+          </Grid>
           <Tabs isFitted variant="enclosed">
             <TabList mb="1em">
-              <Tab>Add Admin</Tab>
-              <Tab>List of Admin</Tab>
+              <Tab as="b" color="#285430">
+                Add Admin
+              </Tab>
+              <Tab as="b" color="#285430">
+                List of Admin
+              </Tab>
             </TabList>
             <TabPanels>
-              <TabPanel>
+              <TabPanel textColor="#285430">
                 <Formik
                   initialValues={{
                     username: "",
@@ -193,12 +232,25 @@ export const SuperComp = () => {
                         <Form>
                           <VStack spacing={4} align="flex-start">
                             <FormControl isRequired>
-                              <FormLabel htmlFor="username">Username</FormLabel>
+                              <FormLabel
+                                ml="3"
+                                color="#285430"
+                                htmlFor="username"
+                              >
+                                Username
+                              </FormLabel>
                               <Field
                                 as={Input}
                                 type="text"
                                 name="username"
                                 variant="filled"
+                                ml="3"
+                                _placeholder={{ color: "#5F8D4E" }}
+                                bgColor={"white"}
+                                textColor="#285430"
+                                borderColor={"#285430"}
+                                border={"2px"}
+                                w={"330px"}
                               />
                               <ErrorMessage
                                 style={{ color: "red" }}
@@ -206,13 +258,23 @@ export const SuperComp = () => {
                                 name="username"
                               />
                             </FormControl>
+
                             <FormControl isRequired>
-                              <FormLabel htmlFor="email">Email</FormLabel>
+                              <FormLabel ml="3" color="#285430" htmlFor="email">
+                                Email
+                              </FormLabel>
                               <Field
                                 as={Input}
                                 type="email"
                                 name="email"
                                 variant="filled"
+                                ml="3"
+                                _placeholder={{ color: "#5F8D4E" }}
+                                bgColor={"white"}
+                                textColor="#285430"
+                                borderColor={"#285430"}
+                                border={"2px"}
+                                w={"330px"}
                               />
                               <ErrorMessage
                                 style={{ color: "red" }}
@@ -221,8 +283,13 @@ export const SuperComp = () => {
                               />
                             </FormControl>
                             <FormControl>
-                              <FormLabel>Branch</FormLabel>
-                              <Select placeholder="Select Branch">
+                              <FormLabel ml="3" color="#285430" htmlFor="branch">Branch</FormLabel>
+                              <Select ml="3" placeholder="Select Branch"  _placeholder={{ color: "#5F8D4E" }}
+                                bgColor={"white"}
+                                textColor="#285430"
+                                borderColor={"#285430"}
+                                border={"2px"}
+                                w={"330px"}>
                                 {data2.map((item) => {
                                   return (
                                     <>
@@ -233,17 +300,33 @@ export const SuperComp = () => {
                               </Select>
                             </FormControl>
                             <FormControl isRequired>
-                              <FormLabel htmlFor="password">Password</FormLabel>
+                              <FormLabel
+                                ml="3"
+                                color="#285430"
+                                htmlFor="password"
+                              >
+                                Password
+                              </FormLabel>
                               <InputGroup>
                                 <Field
                                   as={Input}
                                   type={showPassword ? "text" : "password"}
                                   name="password"
                                   variant="filled"
+                                  ml="3"
+                                  _placeholder={{ color: "#5F8D4E" }}
+                                  bgColor={"white"}
+                                  textColor="#285430"
+                                  borderColor={"#285430"}
+                                  border={"2px"}
+                                  w={"330px"}
                                 />
                                 <InputRightElement h={"full"}>
                                   <Button
-                                    variant={"ghost"}
+                                    color="black"
+                                    pos="relative"
+                                    mr={"40px"}
+                                    zIndex="1"
                                     onClick={() =>
                                       setShowPassword(
                                         (showPassword) => !showPassword
@@ -265,7 +348,11 @@ export const SuperComp = () => {
                               />
                             </FormControl>
                             <FormControl isRequired>
-                              <FormLabel htmlFor="password_confirmation">
+                              <FormLabel
+                                ml="3"
+                                color="#285430"
+                                htmlFor="password_confirmation"
+                              >
                                 Confirm Password
                               </FormLabel>
                               <InputGroup>
@@ -276,10 +363,20 @@ export const SuperComp = () => {
                                   }
                                   name="password_confirmation"
                                   variant="filled"
+                                  ml="3"
+                                  _placeholder={{ color: "#5F8D4E" }}
+                                  bgColor={"white"}
+                                  textColor="#285430"
+                                  borderColor={"#285430"}
+                                  border={"2px"}
+                                  w={"330px"}
                                 />
                                 <InputRightElement h={"full"}>
                                   <Button
-                                    variant={"ghost"}
+                                    color="black"
+                                    pos="relative"
+                                    mr={"40px"}
+                                    zIndex="1"
                                     onClick={() =>
                                       setShowComfirmPassword(
                                         (showConfirmPassword) =>
@@ -301,25 +398,28 @@ export const SuperComp = () => {
                                 style={{ color: "red" }}
                               />
                             </FormControl>
-                            <Button
-                              type="submit"
-                              width="100%"
-                              bg={"green.400"}
-                              color={"white"}
-                              _hover={{
-                                bg: "green.500",
-                              }}
-                            >
-                              Sign up
-                            </Button>
+                            <Center>
+                              <Button
+                                ml="3"
+                                type="submit"
+                                bgColor={"#A4BE7B"}
+                                borderColor="#285430"
+                                border="2px"
+                                fontSize="18px"
+                                color="gray.800"
+                                width={"330px"}
+                                justifyContent="center"
+                              >
+                                Create Branch Admin
+                              </Button>
+                            </Center>
                           </VStack>
                         </Form>
                       </>
                     );
                   }}
                 </Formik>
-              </TabPanel>
-              <TabPanel>
+              </TabPanel><TabPanel>
                 <TableContainer>
                   <Table
                     ml="10px"
@@ -354,6 +454,57 @@ export const SuperComp = () => {
               </TabPanel>
             </TabPanels>
           </Tabs>
+          <Button
+            display={"flex"}
+            bgColor={"#FF0000"}
+            textColor="gray.800"
+            width={"100px"}
+            m="auto"
+            justifyContent={"center"}
+            borderColor="#gray.800"
+            border="2px"
+            onClick={onToggle}
+          >
+            LogOut
+          </Button>
+          <Popover
+            returnFocusOnClose={false}
+            isOpen={isOpen}
+            placement="auto-end"
+            closeOnBlur={false}
+          >
+            <PopoverContent ml="8" mt="275" borderColor="#285430"
+                    border="2px" bgColor={"#E5D9B6"}>
+              <PopoverArrow />
+              <PopoverBody textColor={"#285430"}>
+                Are you sure you want to logout?
+              </PopoverBody>
+              <PopoverFooter display="flex" justifyContent="flex-end">
+                <ButtonGroup size="sm">
+                  <Button
+                    onClick={onClose}
+                    bgColor={"#A4BE7B"}
+                    borderColor="#285430"
+                    border="2px"
+                    fontSize="14px"
+                    color="gray.800"
+                  >
+                    No
+                  </Button>
+                  <Button
+                    onClick={onLogout}
+                    bgColor="#A4BE7B"
+                    borderColor="#285430"
+                    border="2px"
+                    fontSize="14px"
+                    color="gray.800"
+                  >
+                    Yes
+                  </Button>
+                </ButtonGroup>
+              </PopoverFooter>
+            </PopoverContent>
+          </Popover>
         </Box>
       </Box>
     </div>
