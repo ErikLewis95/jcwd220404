@@ -21,6 +21,7 @@ const storage = multer.diskStorage({
         // + path.extname(file.originalname)
     );
     console.log(file);
+  },
+});
+
 exports.multerUpload = multer({ storage });
-=======
->>>>>>> pr/8
