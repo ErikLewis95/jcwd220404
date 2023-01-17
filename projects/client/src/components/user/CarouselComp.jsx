@@ -1,8 +1,7 @@
-import React from "react";
+import { useState } from "react";
 import { Box, IconButton, useBreakpointValue } from "@chakra-ui/react";
 import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
 import Slider from "react-slick";
-import { useState } from "react";
 
 export const CarouselComp = () => {
   const [slider, setSlider] = useState(null);
@@ -11,22 +10,18 @@ export const CarouselComp = () => {
   const side = useBreakpointValue({ base: "30%", md: "10px" });
 
   const cards = [
-    "https://ik.imagekit.io/dcjlghyytp1/cb201e90c04a05ddfe0c2444a8954010?tr=f-auto,w-480?tr=f-auto,w-131",
-    "https://ik.imagekit.io/dcjlghyytp1/bd5336fa7d68e9b750ed75e6b55ee87a?tr=f-auto,w-480?tr=f-auto,w-131",
-    "https://ik.imagekit.io/dcjlghyytp1/146c108249a37c32c4a0cb4ef7fcfcef?tr=f-auto,w-480?tr=f-auto,w-131",
-    "https://ik.imagekit.io/dcjlghyytp1/b157368de305b518c1b362e77826c54a?tr=f-auto,w-480?tr=f-auto,w-131",
-  //  `${process.env.REACT_APP_API_BASE_URL}/upload/PIMG-167323961309566900.webp`,
-//  `${process.env.REACT_APP_API_BASE_URL}/upload/PIMG-167323967203666499.webp`
- ];
+    `${process.env.REACT_APP_API_BASE_URL}/upload/PIMG-167323961309566900.webp`,
+    `${process.env.REACT_APP_API_BASE_URL}/upload/PIMG-167323967203666499.webp`,
+  ];
 
   return (
-    <div>
+    <>
       <Box
         position={"relative"}
         height={"300px"}
         width={"375px"}
         overflow={"hidden"}
-        pt={"88px"}
+        mt={"30px"}
       >
         <link
           rel="stylesheet"
@@ -45,7 +40,7 @@ export const CarouselComp = () => {
           background={"transparent"}
           left={side}
           top={top}
-          transform={"translate(0%, -50%)"}
+          transform={"translate(0%, -220%)"}
           zIndex={1}
           onClick={() => slider?.slickPrev()}
           variant="unstyled"
@@ -58,7 +53,7 @@ export const CarouselComp = () => {
           position="absolute"
           right={side}
           top={top}
-          transform={"translate(50%, -50%)"}
+          transform={"translate(50%, -220%)"}
           zIndex={1}
           onClick={() => slider?.slickNext()}
           variant="unstyled"
@@ -81,7 +76,7 @@ export const CarouselComp = () => {
           ))}
         </Slider>
       </Box>
-    </div>
+    </>
   );
 };
 

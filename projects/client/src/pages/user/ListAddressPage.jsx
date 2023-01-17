@@ -1,4 +1,7 @@
-import React from "react";
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   Button,
@@ -10,7 +13,6 @@ import {
   MenuItem,
   MenuList,
   Text,
- 
 } from "@chakra-ui/react";
 import {
   ArrowBackIcon,
@@ -18,21 +20,13 @@ import {
   EditIcon,
   HamburgerIcon,
 } from "@chakra-ui/icons";
-import {  useState, useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import Axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
 import { syncData } from "../../redux/addressSlice";
 
 export const ListAddressPage = () => {
-  // const [data, setData] = useState([]);
   const { data } = useSelector((state) => state.addressSlice.value);
   const { id } = useSelector((state) => state.userSlice.value);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const params = useParams();
-  console.log(params);
-  
 
   const getData = async () => {
     try {
@@ -40,7 +34,6 @@ export const ListAddressPage = () => {
         `${process.env.REACT_APP_API_BASE_URL}/address/addressById/${id}`
       );
       console.log(result.data);
-      // setData(result.data);
       dispatch(syncData(result.data));
     } catch (err) {
       console.log(err);
@@ -64,15 +57,15 @@ export const ListAddressPage = () => {
   };
 
   const toAddAddress = () => {
-    navigate(`/account/address/addAddress/${id}`);
+    navigate(`/account/address/add/${id}`);
   };
 
   const toUpdate = (addressId) => {
-    navigate(`/account/address/updateAddress/${addressId}`);
+    navigate(`/account/address/update/${addressId}`);
   };
 
   return (
-    <div>
+    <>
       <Center>
         <Box w={"390px"} h={"844px"} bgColor="white">
           <Box
@@ -97,46 +90,51 @@ export const ListAddressPage = () => {
                 fontSize={"25px"}
               />
             </Box>
-            <Box margin={"auto"} alignItems={"baseline"} textColor="#285430">
+            <Box margin={"auto"} alignItems={"center"} textColor="#285430">
               <Text as={"b"} fontSize="xl">
-             Account
+                MY ADDRESS
               </Text>
             </Box>
           </Box>
           <Box
             mt={"80px"}
+            pt={"3px"}
             className="body"
             bgColor="white"
-            h={"1750px"}
+            h={"740px"}
             w={"390px"}
-            pt="10" 
           >
             {data?.map((item) => {
               return (
                 <Box
-                  border={"2px"} borderColor={"black"}
-            p="4" m="4" 
+                  ml="8px"
+                  mr="8px"
+                  mt="8px"
+                  p="4"
+                  border={"2px"}
+                  borderColor={"#285430"}
+                  borderRadius="xl"
                 >
                   <Flex justifyContent={"space-between"}>
                     <Text color={"#285430"}>{item.receiverName}</Text>
                     <Text color={"#285430"}>{item.receiverPhone}</Text>
-                    <Menu theme={({ direction : "rtl" })} width="50px">
+                    <Menu theme={{ direction: "rtl" }}>
                       <MenuButton
                         color={"#285430"}
                         as={IconButton}
                         aria-label="Options"
                         icon={<HamburgerIcon />}
-                        variant="ghost" 
+                        variant="ghost"
                       />
-                        
-                      <MenuList bgColor="#E5D9B6" >
+                      <MenuList bgColor="#E5D9B6">
                         <MenuItem
                           as={"button"}
                           onClick={() => toUpdate(item.id)}
                           icon={<EditIcon />}
                           bgColor="#E5D9B6"
                           textColor={"#285430"}
-                          
+                          placement="bottom"
+                          direction="ltr"
                         >
                           Edit Address
                         </MenuItem>
@@ -146,7 +144,6 @@ export const ListAddressPage = () => {
                           icon={<DeleteIcon />}
                           bgColor="#E5D9B6"
                           textColor={"#285430"}
-                          
                         >
                           Delete Address
                         </MenuItem>
@@ -165,7 +162,8 @@ export const ListAddressPage = () => {
               );
             })}{" "}
             <Center>
-              <Button mt="8"
+              <Button
+                mt="8"
                 onClick={toAddAddress}
                 bgColor={"#A4BE7B"}
                 borderColor="#285430"
@@ -173,7 +171,7 @@ export const ListAddressPage = () => {
                 fontSize="18px"
                 color="gray.800"
                 width={"160px"}
-                justifyContent="baseline"
+                justifyContent="center"
               >
                 Tambah Alamat
               </Button>
@@ -181,6 +179,6 @@ export const ListAddressPage = () => {
           </Box>
         </Box>
       </Center>
-    </div>
+    </>
   );
 };

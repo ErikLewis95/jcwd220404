@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       distributor: DataTypes.STRING,
       description: DataTypes.STRING,
       picture: DataTypes.STRING,
-      
+      weight: DataTypes.STRING,
     },
     {
       sequelize,

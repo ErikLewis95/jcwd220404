@@ -27,4 +27,12 @@ router.get("/city/:provinceId", (req, res) => {
     .catch((err) => res.send(err));
 });
 
+router.get("/postal/:cityId", (req, res) => {
+  const id = req.params.cityId;
+  axios
+    .get(`/postal?city=${id}`)
+    .then((response) => res.json(response.data))
+    .catch((err) => res.send(err));
+});
+
 module.exports = router;

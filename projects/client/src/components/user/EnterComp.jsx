@@ -1,29 +1,26 @@
-import React from "react";
-import {
-  Box,
-  Button,
-  Center,
-  Heading,
-  Input,
-  Stack,
-  Text,
-  Flex,
-  Image,
-  InputGroup,
-  FormControl,
-  FormLabel,
-} from "@chakra-ui/react";
-import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import Axios from "axios";
-import { loginUser } from "../../redux/userSlice";
-import OnlyFreshLogo from "../OnlyFreshLogo.png";
 import Swal from "sweetalert2";
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Heading,
+  Image,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { loginUser } from "../../redux/userSlice";
 import { ForgotPasswordPage } from "../../pages/user/ForgotPassPage";
 
-export const LoginUserComp = () => {
+export const EnterComp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const inputPhoneEmail = useRef("");
@@ -37,6 +34,23 @@ export const LoginUserComp = () => {
         password: inputPass.current.value,
       };
 
+      // if (data.isVerified === 0) {
+      //   return Swal.fire({
+      //     icon: "error",
+      //     // title: "Oooops ...",
+      //     text: "You have to verify your Account",
+      //     timer: 2000,
+      //     customClass: {
+      //       container: "my-swal",
+      //     },
+      //   });
+      // }
+      // const result1 = await Axios.post(
+      //   `${process.env.REACT_APP_API_BASE_URL}/user/login`,
+      //   user
+      // );
+      // setTimeout(() => navigate(`/verification/${result1.data.token}`), 8000);
+
       const result = await Axios.post(
         `${process.env.REACT_APP_API_BASE_URL}/user/login`,
         user
@@ -48,6 +62,7 @@ export const LoginUserComp = () => {
           name: result.data.isAccountExist.name,
           email: result.data.isAccountExist.email,
           id: result.data.isAccountExist.id,
+          // isVerified: result.data.isAccountExist,
         })
       );
       localStorage.setItem("tokenUser", result.data.token);
@@ -56,7 +71,6 @@ export const LoginUserComp = () => {
       Swal.fire({
         icon: "error",
         text: "User Not Found or Password Incorrect",
-        width: "370",
         customClass: {
           container: "my-swal",
         },
@@ -66,29 +80,30 @@ export const LoginUserComp = () => {
   };
 
   return (
-    <div>
+    <>
       <Center>
-        <Box 
-        px={3} 
-        py={3} 
-        bgColor="#E5D9B6" 
-        w={"390px"} 
-        h={"100%"}   
-        border="2px"  >
-          <Image src={OnlyFreshLogo} height="160px" w={"auto"} ml={"75px"} />
-          <Stack align={"center"}>
+        <Box
+          className="body"
+          py={"120px"}
+          px={6}
+          bgColor="#E5D9B6"
+          w={"390px"}
+          h={"850px"}
+        >
+          <Image
+            src={`${process.env.REACT_APP_API_BASE_URL}/upload/PIMG-167324294561798293.png`}
+            height="150px"
+            w={"auto"}
+            ml={"70px"}
+          />
+
           <Heading mt={"10px"} size={"lg"} textColor="#285430">
-           Sign in to your Account
+            Sign in to your Account
           </Heading>
-          </Stack>
-          <Center>
-          <Stack mt={"20px"} spacing={"2px"}>
-          <FormControl isRequired>
-          <FormLabel htmlFor="email" textColor={"#285430"}>
-            <b> Phone Number or Email </b>
-          </FormLabel>
+          <Stack mt={"20px"} spacing={"10px"}>
+            <Text>Phone Number or Email</Text>
             <Input
-              placeholder="08xx or your_email@mail.com"
+              placeholder="08xx or Your Email"
               _placeholder={{ color: "#5F8D4E" }}
               bgColor={"white"}
               textColor="#285430"
@@ -96,19 +111,16 @@ export const LoginUserComp = () => {
               border={"2px"}
               w={"340px"}
               ref={inputPhoneEmail}
-            />
-            </FormControl>
-            <FormControl isRequired>
-          <FormLabel htmlFor="password" textColor={"#285430"}>
-            <b> Password</b>
-          </FormLabel>
+            ></Input>
+            <Text textColor={"#285430"}>Password</Text>
             <InputGroup>
               <Flex justifyContent={"end"}>
                 <Input
+                  isRequired
                   type={showPassword ? "text" : "password"}
-                  name="password"
-                  placeholder="your password"
+                  placeholder="Your Password"
                   ref={inputPass}
+                  variant="solid"
                   _placeholder={{ color: "#5F8D4E" }}
                   bgColor={"white"}
                   textColor="#285430"
@@ -116,20 +128,22 @@ export const LoginUserComp = () => {
                   border={"2px"}
                   w={"340px"}
                   zIndex="1"
-                />
-                <Button
-                  color={"black"}
-                  onClick={() =>
-                    setShowPassword((showPassword) => !showPassword)
-                  }
-                  pos="absolute"
-                  zIndex="2"
-                >
-                  {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                </Button>
+                ></Input>
+                <InputRightElement>
+                  <Button
+                    color={"black"}
+                    onClick={() =>
+                      setShowPassword((showPassword) => !showPassword)
+                    }
+                    pos="absolute"
+                    zIndex="2"
+                    variant="ghost"
+                  >
+                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                  </Button>
+                </InputRightElement>
               </Flex>
             </InputGroup>
-            </FormControl>
             <Center>
               <Button
                 mt={"3"}
@@ -146,30 +160,27 @@ export const LoginUserComp = () => {
                 w={"90px"}
                 alignItems="center"
               >
-                <b>Sign In</b>
+                Sign In
               </Button>
             </Center>
-            <Box display={"flex"} justifyContent="center" >
-              <Text mr={"8px"} textColor="gray.800">
-               <b> Forgot Password</b>
-              </Text>
+            <Box display={"flex"} justifyContent="center">
+              <Text mr={"5px"}> Forgot Password? </Text>
               <ForgotPasswordPage />
             </Box>
+
+            {/* <Text textAlign={"center"}>Don't have an account?</Text>
+            <Link href="/register" textAlign={"center"} color={"blue"}>
+              Register here
+            </Link> */}
             <Text textAlign={"center"} textColor="gray.800">
-              <b> Don't have an account ?</b>
+              Don't have an account?
             </Text>
             <Text as={Link} to="/register" textAlign={"center"} color="#5F8D4E">
-            <b> Register Here</b>
+              Register here
             </Text>
           </Stack>
-          </Center>
-          <Box  justifyContent="center" >
-            <React.StrictMode>
-            <img src="https://cdn.dribbble.com/users/1162077/screenshots/3848914/programmer.gif" width="100%" height="200px"></img>
-            </React.StrictMode>
-            </Box>
         </Box>
       </Center>
-    </div>
+    </>
   );
 };

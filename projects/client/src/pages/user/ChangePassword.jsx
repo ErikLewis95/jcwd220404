@@ -1,3 +1,8 @@
+import { Link, useNavigate, useParams } from "react-router-dom";
+import Axios from "axios";
+import { useState, useRef } from "react";
+import { useSelector } from "react-redux";
+import Swal from "sweetalert2";
 import {
   Box,
   Button,
@@ -9,13 +14,7 @@ import {
   Input,
   Stack,
 } from "@chakra-ui/react";
-import { useRef } from "react";
-import Swal from "sweetalert2";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import Axios from "axios";
-import { useState } from "react";
 import { ArrowBackIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { useSelector } from "react-redux";
 
 export const ChangePassword = (data) => {
   const [move, setMove] = useState(false);
@@ -23,7 +22,6 @@ export const ChangePassword = (data) => {
   const [newPassword, setNewPassword] = useState(false);
   const { id } = useSelector((state) => state.userSlice.value);
   const inputPass = useRef("");
-  const params = useParams();
   const navigate = useNavigate();
 
   const updatePass = async () => {
@@ -53,10 +51,10 @@ export const ChangePassword = (data) => {
   };
 
   return (
-    <div>
-      <Center>
-        <Box w={"390px"} h={"844px"} bgColor="#E5D9B6">
-          <Box as={Link} to={"/account/profile"}>
+    <>
+      <Box w={"390px"} h={"844px"} bgColor="#E5D9B6">
+        <Center>
+          <Box as={Link} to={`/account/profile/${id}`}>
             <ArrowBackIcon
               mt={"20px"}
               pos={"fixed"}
@@ -146,8 +144,8 @@ export const ChangePassword = (data) => {
               </Button>
             </Stack>
           </Box>
-        </Box>
-      </Center>
-    </div>
+        </Center>
+      </Box>
+    </>
   );
 };

@@ -1,4 +1,7 @@
-import { ArrowBackIcon } from "@chakra-ui/icons";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import Axios from "axios";
+import Swal from "sweetalert2";
 import {
   Box,
   Center,
@@ -13,17 +16,15 @@ import {
   Textarea,
   Text,
 } from "@chakra-ui/react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useRef } from "react";
-import Axios from "axios";
-import Swal from "sweetalert2";
-import { useState } from "react";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 
 export const AddressPage = () => {
   const [province, setProvince] = useState([]);
   const [city, setCity] = useState([]);
+  const [postal, setPostal] = useState([]);
   const [selectedProvince, setSelectedProvince] = useState(0);
   const [selectedCity, setSelectedCity] = useState(0);
+  const [selectedPostal, setSelectedPostal] = useState(0);
   const inputAddressLine = useRef("");
   const inputCity = useRef("");
   const inputProvince = useRef("");
@@ -109,6 +110,28 @@ export const AddressPage = () => {
     });
   };
 
+  const fetchPostal = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_BASE_URL}/address/postal/${selectedPostal}`
+      );
+      console.log(response);
+      setPostal(response.data.rajaongkir.results);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const renderPostal = () => {
+    return Array.from(postal).map((val, i) => {
+      return (
+        <option value={val.city_id} key={i}>
+          {val.type + " "} {val.postal_code}
+        </option>
+      );
+    });
+  };
+
   const provinceHandler = ({ target }) => {
     const { value } = target;
     setSelectedProvince(value);
@@ -119,6 +142,11 @@ export const AddressPage = () => {
     setSelectedCity(value);
   };
 
+  const postalHandler = ({ target }) => {
+    const { value } = target;
+    setSelectedPostal(value);
+  };
+
   useEffect(() => {
     fetchProvince();
   }, []);
@@ -127,77 +155,82 @@ export const AddressPage = () => {
     fetchCity();
   }, [selectedProvince]);
 
+  useEffect(() => {
+    fetchPostal();
+  }, [selectedCity]);
+
   return (
-    <div>
-      <Center>
-        <Box
-          className="header"
-          w={"390px"}
-          h={"80px"}
-          bgColor="#E5D9B6"
-          display={"flex"}
-          justifyContent="space-between"
-          pt={"10px"}
-          pl={"1px"}
-          // pos="fixed"
-          top={"0"}
-          zIndex={"2"}
-        >
-          <Box as={Link} to={"/account/address"}>
-            <ArrowBackIcon
-              mt={"20px"}
-              ml={"20px"}
-              pos={"fixed"}
-              color="#285430"
-              fontSize={"25px"}
-            />
-            <Box margin={"auto"} alignItems={"center"} textColor="#285430">
-              <Text as={"b"} fontSize="xl">
-                ADD ADDRESS
-              </Text>
+    <>
+      <Box>
+        <Center>
+          <Box
+            className="header"
+            w={"390px"}
+            h={"80px"}
+            bgColor="#E5D9B6"
+            display={"flex"}
+            justifyContent="space-between"
+            pt={"10px"}
+            pl={"1px"}
+            // pos="fixed"
+            top={"0"}
+            zIndex={"2"}
+          >
+            <Box as={Link} to={"/account/address"}>
+              <ArrowBackIcon
+                mt={"20px"}
+                ml={"20px"}
+                pos={"fixed"}
+                color="#285430"
+                fontSize={"25px"}
+              />
+              <Box margin={"auto"} alignItems={"center"} textColor="#285430">
+                <Text as={"b"} fontSize="xl">
+                  ADD ADDRESS
+                </Text>
+              </Box>
             </Box>
-          </Box>
-          <Box className="body" bgColor="white" h={"850px"} w={"390px"}>
-            <Stack spacing={"10px"} mt={"20px"} textColor="#285430">
-              <FormControl>
-                <FormLabel>Alamat</FormLabel>
-                <Input
-                  ref={inputAddressLine}
-                  placeholder="Alamat"
-                  mb={"20px"}
-                  ml="20px"
-                  width="340px"
-                  border="2px"
-                  borderColor="#285430"
-                ></Input>
-              </FormControl>
-              <FormControl>
-                <FormLabel>Kecamatan</FormLabel>
-                <Input
-                  ref={inputDistrict}
-                  mb={"20px"}
-                  ml="20px"
-                  width="340px"
-                  border="2px"
-                  borderColor="#285430"
-                ></Input>
-              </FormControl>
-              <FormControl>
-                <FormLabel>Province</FormLabel>
-                <Select
-                  placeholder="Select Province"
-                  onChange={provinceHandler}
-                >
-                  {renderProvince()}
-                </Select>
-              </FormControl>
-              <FormControl>
-                <FormLabel>City</FormLabel>
-                <Select placeholder="Select City" onChange={cityHandler}>
-                  {renderCity()}
-                </Select>
-              </FormControl>
-              {/* <FormControl>
+            <Box className="body" bgColor="white" h={"850px"} w={"390px"}>
+              <Stack spacing={"10px"} mt={"20px"} textColor="#285430">
+                <FormControl>
+                  <FormLabel>Alamat</FormLabel>
+                  <Input
+                    ref={inputAddressLine}
+                    placeholder="Alamat"
+                    mb={"20px"}
+                    ml="20px"
+                    width="340px"
+                    border="2px"
+                    borderColor="#285430"
+                  ></Input>
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Kecamatan</FormLabel>
+                  <Input
+                    ref={inputDistrict}
+                    mb={"20px"}
+                    ml="20px"
+                    width="340px"
+                    border="2px"
+                    borderColor="#285430"
+                  ></Input>
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Province</FormLabel>
+                  <Select
+                    placeholder="Select Province"
+                    onChange={provinceHandler}
+                  >
+                    {renderProvince()}
+                  </Select>
+                </FormControl>
+                <FormControl>
+                  <FormLabel>City</FormLabel>
+                  <Select placeholder="Select City" onChange={cityHandler}>
+                    {renderCity()}
+                  </Select>
+                </FormControl>
+                {/* <FormControl>
                 <FormLabel>Provinsi</FormLabel>
                 <Select
                   ref={inputProvince}
@@ -217,7 +250,7 @@ export const AddressPage = () => {
                   <option value="3">Banten</option>
                 </Select>
               </FormControl> */}
-              {/* <FormControl>
+                {/* <FormControl>
                 <FormLabel>Kota/Kabupaten</FormLabel>
                 <Select
                   ref={inputCity}
@@ -242,69 +275,71 @@ export const AddressPage = () => {
                   <option value="155">Kota Jakarta Utara</option>
                 </Select>
               </FormControl> */}
-              <FormControl>
-                <FormLabel>Kode Pos</FormLabel>
-                <Input
-                  ref={inputPostalCode}
-                  ml={"20px"}
-                  width="340px"
-                  border="2px"
+                <FormControl>
+                  <FormLabel>Kode Pos</FormLabel>
+                  <Input
+                    ml={"20px"}
+                    width="340px"
+                    border="2px"
+                    borderColor="#285430"
+                  >
+                    {/* {renderPostal()} */}
+                  </Input>
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Detail Alamat</FormLabel>
+                  <Textarea
+                    ref={inputDetail}
+                    placeholder="e.g. Blok/Lantai"
+                  ></Textarea>
+                </FormControl>
+                <Checkbox mb={"20px"}>Set as Default Address</Checkbox>
+                <FormControl>
+                  <FormLabel>Nama Penerima</FormLabel>
+                  <Flex>
+                    <Input ref={inputReceiverName} placeholder="Name"></Input>
+                  </Flex>
+                </FormControl>
+                <FormControl>
+                  <FormLabel>No. Telepon Penerima</FormLabel>
+                  <Input
+                    ref={inputReceiverPhone}
+                    placeholder="08xxx"
+                    type={"text"}
+                    ml={"20px"}
+                    width="340px"
+                    border="2px"
+                    borderColor="#285430"
+                  ></Input>
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Email Penerima</FormLabel>
+                  <Input
+                    ref={inputReceiverEmail}
+                    placeholder="yourname@example.com"
+                    ml={"20px"}
+                    width="340px"
+                    border="2px"
+                    borderColor="#285430"
+                  ></Input>
+                </FormControl>
+                <Button
+                  onClick={onCreate}
+                  bgColor={"#A4BE7B"}
                   borderColor="#285430"
-                ></Input>
-              </FormControl>
-              <FormControl>
-                <FormLabel>Detail Alamat</FormLabel>
-                <Textarea
-                  ref={inputDetail}
-                  placeholder="e.g. Blok/Lantai"
-                ></Textarea>
-              </FormControl>
-              <Checkbox mb={"20px"}>Set as Default Address</Checkbox>
-              <FormControl>
-                <FormLabel>Nama Penerima</FormLabel>
-                <Flex>
-                  <Input ref={inputReceiverName} placeholder="Name"></Input>
-                </Flex>
-              </FormControl>
-              <FormControl>
-                <FormLabel>No. Telepon Penerima</FormLabel>
-                <Input
-                  ref={inputReceiverPhone}
-                  placeholder="08xxx"
-                  type={"text"}
-                  ml={"20px"}
-                  width="340px"
                   border="2px"
-                  borderColor="#285430"
-                ></Input>
-              </FormControl>
-              <FormControl>
-                <FormLabel>Email Penerima</FormLabel>
-                <Input
-                  ref={inputReceiverEmail}
-                  placeholder="yourname@example.com"
-                  ml={"20px"}
-                  width="340px"
-                  border="2px"
-                  borderColor="#285430"
-                ></Input>
-              </FormControl>
-              <Button
-                onClick={onCreate}
-                bgColor={"#A4BE7B"}
-                borderColor="#285430"
-                border="2px"
-                fontSize="18px"
-                color="gray.800"
-                width={"160px"}
-                justifyContent="center"
-              >
-                Add Address
-              </Button>
-            </Stack>
+                  fontSize="18px"
+                  color="gray.800"
+                  width={"160px"}
+                  justifyContent="center"
+                >
+                  Add Address
+                </Button>
+              </Stack>
+            </Box>
           </Box>
-        </Box>
-      </Center>
-    </div>
+        </Center>
+      </Box>
+    </>
   );
 };

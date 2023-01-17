@@ -1,5 +1,9 @@
-import React from "react";
 import { useState } from "react";
+import Swal from "sweetalert2";
+import Axios from "axios";
+import * as Yup from "yup";
+import { Link, useNavigate } from "react-router-dom";
+import { Field, ErrorMessage, Formik, Form } from "formik";
 import {
   Heading,
   Box,
@@ -13,17 +17,10 @@ import {
   FormLabel,
   Input,
   InputGroup,
-
+  InputRightElement,
+  VStack,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import OnlyFreshLogo from "../../OnlyFreshLogo.png";
-import Axios from "axios";
-import * as Yup from "yup";
-import { Link, useNavigate } from "react-router-dom";
-import { Field, ErrorMessage, Formik, Form } from "formik";
-import Swal from "sweetalert2";
-
-const url = "http://localhost:8000/user/register";
 
 export const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -36,9 +33,38 @@ export const RegisterPage = () => {
       .min(5, "Name min. 5 characters"),
     phoneNumber: Yup.string()
       .required("Phone Number is a required field")
-      .min(10, "Phone Number must min 10 numbers")
+      .min(10, "Phone Number minimum 10 numbers")
       .max(12, "Phone Number must max 12 numbers"),
+    // .test("Phone Number", "Phone Number already exist", function (value) {
+    //   return new Promise((resolve, reject) => {
+    //     Axios.get(`http://localhost:8000/user/${value}/availableNumber`)
+    //       .then((res) => {
+    //         resolve(!res.data);
+    //       })
+    //       .catch((err) => {
+    //         if (
+    //           err.response.data.content === `The phone number already used`
+    //         ) {
+    //           resolve(false);
+    //         }
+    //       });
+    //   });
+    // }),
     email: Yup.string().email().required("Email is a required field"),
+    // .test("Email", "Email already exist", function (value) {
+    //   return new Promise((resolve, reject) => {
+    //     Axios.get(`http://localhost:8000/user/${value}/available`)
+    //       .then((res) => {
+    //         resolve(!res.data);
+    //       })
+    //       .catch((err) => {
+    //         if (err.response.data.content === `The email already used`) {
+    //           resolve(false);
+    //         }
+    //       });
+    //   });
+    // }),
+
     password: Yup.string()
       .required("Password is a required field")
       .min(8, "Password min. 8 characters"),
@@ -54,7 +80,6 @@ export const RegisterPage = () => {
         return Swal.fire({
           icon: "error",
           title: "Oooops ...",
-          width: "370px",
           text: "make sure password and confirm password match",
           timer: 2000,
           customClass: {
@@ -62,11 +87,13 @@ export const RegisterPage = () => {
           },
         });
       }
-      const result = await Axios.post(url, data);
+      const result = await Axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/user/register`,
+        data
+      );
       Swal.fire({
         icon: "success",
-        title: "Register Success",
-        width: "370px",
+        title: "Good Job",
         text: `${result.data.massage}`,
         timer: 2000,
         customClass: {
@@ -78,28 +105,42 @@ export const RegisterPage = () => {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Email already used",
-        width: "370px",
+        text: `${err.response.data}`,
         customClass: {
           container: "my-swal",
         },
+        width: "370px",
       });
     }
   };
+
   return (
-    <div>
-      <Center>
-        <Box px={3} py={3} bgColor="#E5D9B6" h={"100%"} w={"390px"} justifyContent="center"  border="2px" >
-        <Image src={OnlyFreshLogo} height="160px" w={"auto"} ml={"75px"} />  
-        <Stack align={"center"}>
-        <Heading mt={"10px"} size={"lg"} textColor="#285430">
-          Create your account
-        </Heading>
-          <Text fontSize={"lg"} color={"#285430"} spacing={"2"}>
-          <b>Start Your Freshness</b>
-          </Text>
-          </Stack>
-          <Stack mt={"20px"} spacing={"8px"} align={"center"}>    
+    <>
+      <Box>
+        <Center py={6}>
+          <Box
+            px={3}
+            py={3}
+            className="body"
+            bgColor="#E5D9B6"
+            h={"100%"}
+            w={"390px"}
+          >
+            <Flex align={"center"} justify={"center"}>
+              <Stack mx={"auto"} maxW={"auto"} py={10} px={6}>
+                <Stack align={"center"}>
+                  <Image
+                    src={`${process.env.REACT_APP_API_BASE_URL}/upload/PIMG-167324294561798293.png`}
+                    height="100px"
+                  />
+                  <Heading mt="-6" textColor={"#285430"} fontSize={"2xl"}>
+                    Create your account
+                  </Heading>
+                  <Text fontSize={"lg"} color={"#285430"}>
+                    to start your freshness{" "}
+                  </Text>
+                </Stack>
+                <Box rounded={"2xl"} boxShadow={"lg"} p={8}>
                   <Formik
                     initialValues={{
                       name: "",
@@ -120,17 +161,18 @@ export const RegisterPage = () => {
                   >
                     {(props) => {
                       return (
-                        <div>
+                        <>
                           <Form>
-                          <Stack  spacing={"8px"} align={"center"}>
+                            <VStack spacing={"8px"} align="center">
                               <FormControl isRequired>
-                                <FormLabel htmlFor="name" textColor={"#285430"}>
-                                  <b>Name</b>
+                                <FormLabel textColor={"#285430"} htmlFor="name">
+                                  Name
                                 </FormLabel>
                                 <Field
                                   as={Input}
                                   type="text"
                                   name="name"
+                                  variant="filled"
                                   placeholder="Your Name"
                                   _placeholder={{ color: "#5F8D4E" }}
                                   bgColor={"white"}
@@ -146,17 +188,15 @@ export const RegisterPage = () => {
                                 />
                               </FormControl>
                               <FormControl isRequired>
-                                <FormLabel
-                                  htmlFor="phoneNumber"
-                                  textColor={"#285430"}
-                                >
-                                  <b>Phone Number</b>
+                                <FormLabel textColor={"#285430"} htmlFor="name">
+                                  Phone Number
                                 </FormLabel>
                                 <Field
                                   as={Input}
                                   type="text"
                                   name="phoneNumber"
-                                  placeholder="08xx until 12 Character "
+                                  variant="filled"
+                                  placeholder="Your Name"
                                   _placeholder={{ color: "#5F8D4E" }}
                                   bgColor={"white"}
                                   textColor="#285430"
@@ -172,16 +212,17 @@ export const RegisterPage = () => {
                               </FormControl>
                               <FormControl isRequired>
                                 <FormLabel
-                                  htmlFor="email"
                                   textColor={"#285430"}
+                                  htmlFor="email"
                                 >
-                                  <b>Email</b>
+                                  Email
                                 </FormLabel>
-                                <Input
-                                  as={Field}
+                                <Field
+                                  as={Input}
                                   type="email"
                                   name="email"
-                                  placeholder="your_email@mail.com"
+                                  variant="filled"
+                                  placeholder="Your Name"
                                   _placeholder={{ color: "#5F8D4E" }}
                                   bgColor={"white"}
                                   textColor="#285430"
@@ -197,36 +238,34 @@ export const RegisterPage = () => {
                               </FormControl>
                               <FormControl isRequired>
                                 <FormLabel
-                                  htmlFor="password"
                                   textColor={"#285430"}
+                                  htmlFor="password"
                                 >
-                                <b>Password</b>
+                                  Password
                                 </FormLabel>
                                 <InputGroup>
-                                  <Flex justifyContent={"end"}>
-                                    <Field
-                                      as={Input}
-                                      type={showPassword ? "text" : "password"}
-                                      name="password"
-                                      placeholder="your password"
-                                      _placeholder={{ color: "#5F8D4E" }}
-                                      bgColor={"white"}
-                                      textColor="#285430"
-                                      borderColor={"#285430"}
-                                      border={"2px"}
-                                      w={"340px"}  
-                                      zIndex="1"
-                                    />
+                                  <Field
+                                    as={Input}
+                                    type={showPassword ? "text" : "password"}
+                                    name="password"
+                                    variant="filled"
+                                    placeholder="Your Name"
+                                    _placeholder={{ color: "#5F8D4E" }}
+                                    bgColor={"white"}
+                                    textColor="#285430"
+                                    borderColor={"#285430"}
+                                    border={"2px"}
+                                    w={"340px"}
+                                  />
+
+                                  <InputRightElement h={"full"}>
                                     <Button
-                                      color={"black"}
+                                      variant={"ghost"}
                                       onClick={() =>
                                         setShowPassword(
                                           (showPassword) => !showPassword
                                         )
                                       }
-                                      pos="absolute"
-                                      ml={"181px"}
-                                      zIndex="2"
                                     >
                                       {showPassword ? (
                                         <ViewIcon />
@@ -234,7 +273,7 @@ export const RegisterPage = () => {
                                         <ViewOffIcon />
                                       )}
                                     </Button>
-                                  </Flex>
+                                  </InputRightElement>
                                 </InputGroup>
                                 <ErrorMessage
                                   component="div"
@@ -244,41 +283,36 @@ export const RegisterPage = () => {
                               </FormControl>
                               <FormControl isRequired>
                                 <FormLabel
-                                  htmlFor="password_confirmation"
                                   textColor={"#285430"}
+                                  htmlFor="password_confirmation"
                                 >
-                                  <b>Confirm Password</b>
+                                  Confirm Password
                                 </FormLabel>
                                 <InputGroup>
-                                  <Flex justifyContent="end">
-                                    <Field
-                                      as={Input}
-                                      type={
-                                        showConfirmPassword
-                                          ? "text"
-                                          : "password"
-                                      }
-                                      name="password_confirmation"
-                                      placeholder="your confirmation password"
-                                      _placeholder={{ color: "#5F8D4E" }}
-                                      bgColor={"white"}
-                                      textColor="#285430"
-                                      borderColor={"#285430"}
-                                      border={"2px"}
-                                      w={"340px"}
-                                      zIndex="1"
-                                    />
+                                  <Field
+                                    as={Input}
+                                    type={
+                                      showConfirmPassword ? "text" : "password"
+                                    }
+                                    name="password_confirmation"
+                                    variant="filled"
+                                    placeholder="Your Name"
+                                    _placeholder={{ color: "#5F8D4E" }}
+                                    bgColor={"white"}
+                                    textColor="#285430"
+                                    borderColor={"#285430"}
+                                    border={"2px"}
+                                    w={"340px"}
+                                  />
+                                  <InputRightElement h={"full"}>
                                     <Button
-                                      color={"black"}
+                                      variant={"ghost"}
                                       onClick={() =>
                                         setShowComfirmPassword(
                                           (showConfirmPassword) =>
                                             !showConfirmPassword
                                         )
                                       }
-                                      pos="absolute"
-                                      ml={"181px"}
-                                      zIndex="2"
                                     >
                                       {showConfirmPassword ? (
                                         <ViewIcon />
@@ -286,7 +320,7 @@ export const RegisterPage = () => {
                                         <ViewOffIcon />
                                       )}
                                     </Button>
-                                  </Flex>
+                                  </InputRightElement>
                                 </InputGroup>
                                 <ErrorMessage
                                   component="div"
@@ -294,58 +328,48 @@ export const RegisterPage = () => {
                                   style={{ color: "red" }}
                                 />
                               </FormControl>
-                              <Center>
                               <Button
-                              type = "submit"
-                              mt={"3"}
-                              mb={"3"}
-                              _hover={{
-                              bg: "#E5D9B6",
-                              }}
-                              bgColor={"#A4BE7B"}
-                              borderColor="#285430"
-                              border="2px"
-                              fontSize="18px"
-                              color="gray.800"
-                              w={"90px"}
-                              alignItems="center"
+                                type="submit"
+                                _hover={{
+                                  bg: "#E5D9B6",
+                                }}
+                                bgColor={"#A4BE7B"}
+                                borderColor="#285430"
+                                border="2px"
+                                fontSize="18px"
+                                color="gray.800"
+                                w={"230px"}
                               >
-                             <b> Sign up</b>
-                            </Button>
-                          </Center>
-                          </Stack>
+                                Sign up
+                              </Button>
+                              <Text
+                                mt={"20px"}
+                                fontSize={"md"}
+                                textColor="gray.800"
+                              >
+                                Already have an account?
+                              </Text>
+                              <Text
+                                as={Link}
+                                to="/loginUser"
+                                color="#5F8D4E"
+                                fontSize={"md"}
+                              >
+                                Login Here
+                              </Text>
+                            </VStack>
                           </Form>
-                          <Box display={"flex"} justifyContent="center" spacing={"4"} >
-                          <Text
-                            fontSize={"md"}
-                            textColor="gray.800"
-                          >
-                            <b>Already have an account ?</b>
-                          </Text>
-                          </Box>
-                          <Center>
-                          <Text
-                            as={Link}
-                            to="/loginUser"
-                            color="#5F8D4E"
-                            fontSize={"md"}
-                          >
-                            <b>Login Here</b>
-                          </Text>
-                          
-                          </Center>
-                        </div>
+                        </>
                       );
                     }}
                   </Formik>
-            </Stack>  
-            <Box  justifyContent="center" >
-            <React.StrictMode>
-            <img src="https://cdn.dribbble.com/users/1162077/screenshots/3848914/programmer.gif" width="100%" height="200px"></img>
-            </React.StrictMode>
-            </Box>
-        </Box>
-      </Center>
-    </div>
+                </Box>
+              </Stack>
+              {/* </Box> */}
+            </Flex>
+          </Box>
+        </Center>
+      </Box>
+    </>
   );
 };

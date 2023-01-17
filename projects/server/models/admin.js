@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Admin.hasMany(models.Branch);
+      Admin.belongsTo(models.Branch);
       Admin.hasMany(models.Inventory);
       Admin.hasMany(models.Price);
       Admin.hasMany(models.Transaction);
@@ -17,27 +17,9 @@ module.exports = (sequelize, DataTypes) => {
   }
   Admin.init(
     {
-      username: {
-        type  : DataTypes.STRING,
-        unique: "username",
-        allowNull: false, 
-      },
-      email   : {
-        type : DataTypes.STRING,
-        unique : "email",
-        allowNull: false,
-      },
-      password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          len: [8],
-        },
-      },
-      isSuper : {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true,
-      },
+      username: DataTypes.STRING,
+      password: DataTypes.STRING,
+      isSuper: DataTypes.BOOLEAN,
     },
     {
       sequelize,

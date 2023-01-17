@@ -1,9 +1,8 @@
 import { Box, Heading, Text, Button, Center, Image } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-// import ForbiddenIcon from "../ForbiddenIcon.jpg";
 
 export const RestrictedPage = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const toHome = () => {
     navigate("/account");
   };
@@ -30,10 +29,10 @@ export const RestrictedPage = () => {
               403
             </Heading>
             <Text color={"#285430"} fontSize="23px" mt={3} mb={2}>
-              Forbidden
+              Restricted Access
             </Text>
             <Text color={"#285430"} fontSize="18px" mb={6}>
-              You don't have a permission to access this page
+              You don't have authorization to access this page
             </Text>
             <Button
               bgColor={"#A4BE7B"}
@@ -43,11 +42,13 @@ export const RestrictedPage = () => {
               color="gray.800"
               onClick={toHome}
             >
-              Go to Home
+              Back to Login
             </Button>
             <Box mt={"40px"}>
-              <Image 
-              // src={ForbiddenIcon}  
+              <Image
+                src={
+                  "https://www.shareicon.net/data/512x512/2015/09/19/643274_access-denied_512x512.png"
+                }
               />
             </Box>
           </Box>

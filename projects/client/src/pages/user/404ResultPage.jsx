@@ -1,6 +1,5 @@
-import { Box, Heading, Text, Button, Center, Image } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import NotFoundIcon from "../../NotFoundIcon.png";
+import { Box, Heading, Text, Button, Center, Image } from "@chakra-ui/react";
 
 export const NotFoundPage = () => {
   const navigate = useNavigate();
@@ -8,9 +7,9 @@ export const NotFoundPage = () => {
     navigate("/");
   };
   return (
-    <div>
-      <Center>
-        <Box>
+    <>
+      <Box>
+        <Center>
           <Box
             textAlign="center"
             py={10}
@@ -51,8 +50,8 @@ export const NotFoundPage = () => {
               />
             </Box>
           </Box>
-        </Box>
-      </Center>
-    </div>
+        </Center>
+      </Box>
+    </>
   );
 };

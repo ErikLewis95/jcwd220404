@@ -40,7 +40,6 @@ module.exports = {
   login: async (req, res) => {
     try {
       const { usernameEmail, password } = req.body;
-      
 
       const isUserExist = await admin.findOne({
         where: {
@@ -67,7 +66,6 @@ module.exports = {
         token,
       });
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
@@ -99,7 +97,6 @@ module.exports = {
       });
       res.status(200).send(admins);
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },

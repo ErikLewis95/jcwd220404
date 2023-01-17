@@ -1,11 +1,19 @@
-import { Box, Center, Heading } from "@chakra-ui/react";
-import { Button, FormControl, Flex, Stack, HStack } from "@chakra-ui/react";
-import { PinInput, PinInputField } from "@chakra-ui/react";
-import { Navigate, useParams } from "react-router-dom";
 import Axios from "axios";
-import { useState } from "react";
-import { useRef } from "react";
+import { useState, useRef } from "react";
+import { Navigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import {
+  Button,
+  FormControl,
+  Flex,
+  Stack,
+  HStack,
+  Box,
+  Center,
+  Heading,
+  PinInput,
+  PinInputField,
+} from "@chakra-ui/react";
 
 export const VerificationPage = () => {
   const params = useParams();
@@ -35,6 +43,7 @@ export const VerificationPage = () => {
         icon: "success",
         title: "Success...",
         text: `${res.data.message}`,
+        width: "370px",
       });
       setMove(true);
     } catch (err) {
@@ -45,6 +54,7 @@ export const VerificationPage = () => {
         customClass: {
           container: "my-swal",
         },
+        width: "370px",
       });
     }
   };
@@ -52,113 +62,120 @@ export const VerificationPage = () => {
   return move ? (
     <Navigate to="/" />
   ) : (
-    <Center>
-      <Box
-      // className="body"
-      // bgColor="white"
-      // h={"1750px"}
-      // w={"390px"}
-      >
-        <Flex
-          minH={"100vh"}
-          align={"center"}
-          justify={"center"}
-          bg={"#E5D9B6"}
-          h={"844px"}
-          w={"390px"}
-        >
-          <Stack
-            spacing={4}
-            w={"full"}
-            maxW={"sm"}
-            bg={"#E5D9B6"}
-            p={6}
-            my={10}
-            mt="-380px"
+    <>
+      <Box>
+        <Center>
+          <Box
+          // className="body"
+          // bgColor="white"
+          // h={"1750px"}
+          // w={"390px"}
           >
-            <Center>
-              <Heading
-                color={"#285430"}
-                lineHeight={1.1}
-                fontSize={{ base: "2xl", md: "3xl" }}
+            <Flex
+              minH={"100vh"}
+              align={"center"}
+              justify={"center"}
+              bg={"#E5D9B6"}
+              h={"844px"}
+              w={"390px"}
+            >
+              <Stack
+                spacing={4}
+                w={"full"}
+                maxW={"sm"}
+                bg={"#E5D9B6"}
+                p={6}
+                my={10}
+                mt="-380px"
               >
-                Verify your Email
-              </Heading>
-            </Center>
-            <Center textColor={"#285430"} fontSize={{ base: "sm", sm: "md" }}>
-              We have sent code to your email
-            </Center>
-            <FormControl>
-              <Center>
-                <HStack>
-                  <PinInput>
-                    <PinInputField
-                      type={"password"}
-                      ref={otp1}
-                      size="xl"
-                      textColor="gray.800"
-                      border="2px"
-                      borderColor={"#285430"}
-                    />
-                    <PinInputField
-                      type={"password"}
-                      ref={otp2}
-                      size="xl"
-                      textColor="gray.800"
-                      border="2px"
-                      borderColor={"#285430"}
-                    />
-                    <PinInputField
-                      type={"password"}
-                      ref={otp3}
-                      size="xl"
-                      textColor="gray.800"
-                      border="2px"
-                      borderColor={"#285430"}
-                    />
-                    <PinInputField
-                      type={"password"}
-                      ref={otp4}
-                      size="xl"
-                      textColor="gray.800"
-                      border="2px"
-                      borderColor={"#285430"}
-                    />
-                    <PinInputField
-                      type={"password"}
-                      ref={otp5}
-                      size="xl"
-                      textColor="gray.800"
-                      border="2px"
-                      borderColor={"#285430"}
-                    />
-                    <PinInputField
-                      type={"password"}
-                      ref={otp6}
-                      size="xl"
-                      textColor="gray.800"
-                      border="2px"
-                      borderColor={"#285430"}
-                    />
-                  </PinInput>
-                </HStack>
-              </Center>
-            </FormControl>
-            <Stack spacing={6}>
-              <Button
-                onClick={onVerification}
-                bgColor={"#A4BE7B"}
-                borderColor="#285430"
-                fontSize="18px"
-                color="gray.800"
-                border="2px"
-              >
-                Verify
-              </Button>
-            </Stack>
-          </Stack>
-        </Flex>
+                <Center>
+                  <Heading
+                    color={"#285430"}
+                    lineHeight={1.1}
+                    fontSize={{ base: "2xl", md: "3xl" }}
+                  >
+                    Verify your Email
+                  </Heading>
+                </Center>
+                <Center
+                  textColor={"#285430"}
+                  fontSize={{ base: "sm", sm: "md" }}
+                >
+                  We have sent code to your email
+                </Center>
+                <FormControl>
+                  <Center>
+                    <HStack>
+                      <PinInput>
+                        <PinInputField
+                          type={"password"}
+                          ref={otp1}
+                          size="xl"
+                          textColor="gray.800"
+                          border="2px"
+                          borderColor={"#285430"}
+                        />
+                        <PinInputField
+                          type={"password"}
+                          ref={otp2}
+                          size="xl"
+                          textColor="gray.800"
+                          border="2px"
+                          borderColor={"#285430"}
+                        />
+                        <PinInputField
+                          type={"password"}
+                          ref={otp3}
+                          size="xl"
+                          textColor="gray.800"
+                          border="2px"
+                          borderColor={"#285430"}
+                        />
+                        <PinInputField
+                          type={"password"}
+                          ref={otp4}
+                          size="xl"
+                          textColor="gray.800"
+                          border="2px"
+                          borderColor={"#285430"}
+                        />
+                        <PinInputField
+                          type={"password"}
+                          ref={otp5}
+                          size="xl"
+                          textColor="gray.800"
+                          border="2px"
+                          borderColor={"#285430"}
+                        />
+                        <PinInputField
+                          type={"password"}
+                          ref={otp6}
+                          size="xl"
+                          textColor="gray.800"
+                          border="2px"
+                          borderColor={"#285430"}
+                        />
+                      </PinInput>
+                    </HStack>
+                  </Center>
+                </FormControl>
+                <Stack spacing={6}>
+                  <Button
+                    onClick={onVerification}
+                    bgColor={"#A4BE7B"}
+                    borderColor="#285430"
+                    fontSize="18px"
+                    color="gray.800"
+                    border="2px"
+                  >
+                    Verify
+                  </Button>
+                </Stack>
+              </Stack>
+            </Flex>
+          </Box>
+        </Center>
       </Box>
-    </Center>
+    </>
   );
 };

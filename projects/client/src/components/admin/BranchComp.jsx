@@ -77,7 +77,7 @@ export const BranchComp = () => {
       const addProduct = {
         productName: inputProductName.current.value,
         description: inputDescription.current.value,
-        // distributor: inputDistributor.current.value,
+        distributor: inputDistributor.current.value,
       };
       const res = await Axios.post(
         `${process.env.REACT_APP_API_BASE_URL}/product/create`,
@@ -199,7 +199,7 @@ export const BranchComp = () => {
     console.log(data.get("file"));
 
     const resultImage = await Axios.post(
-      `${process.env.REACT_APP_API_BASE_URL}/product/single-uploaded/7`,
+      `${process.env.REACT_APP_API_BASE_URL}/product/single-uploaded/3`,
       data,
       {
         headers: {
@@ -210,9 +210,9 @@ export const BranchComp = () => {
     console.log(resultImage.data);
     setProfile(resultImage.data.picture);
     setImage({ images: "" });
+
     console.log(image);
     console.log(profile);
-    setTimeout(() => window.location.replace("/adminPage"), 2000);
   };
 
   const handleUpload1 = async (id) => {
@@ -222,7 +222,7 @@ export const BranchComp = () => {
     console.log(data.get("file"));
 
     const resultImage = await Axios.post(
-      `${process.env.REACT_APP_API_BASE_URL}/product/single-uploaded-category/8`,
+      `${process.env.REACT_APP_API_BASE_URL}/product/single-uploaded-category/${id}`,
       data,
       {
         headers: {
@@ -235,7 +235,6 @@ export const BranchComp = () => {
     setImage2({ images: "" });
     console.log(image2);
     console.log(profile2);
-    setTimeout(() => window.location.replace("/adminPage"), 2000);
   };
 
   const handleUpload2 = async () => {
@@ -563,7 +562,7 @@ export const BranchComp = () => {
                               </ButtonGroup>
                             </Td>
                             <Td color={"#285430"}>{item.description}</Td>
-                            {/* <Td>{item.distributor}</Td> */}
+                            <Td>{item.distributor}</Td>
                           </Tr>
                         );
                       })}
