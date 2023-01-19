@@ -7,14 +7,14 @@ const category = db.Category;
 module.exports = {
   create: async (req, res) => {
     try {
-      const { productName, distributor, description } = req.body;
+      const { productName, distributor, description, qty } = req.body;
 
-      if (!productName && !distributor && !description) throw "required field";
+      if (!productName && !distributor && !description && !qty) throw "required field";
 
       await product.create({
         productName,
         distributor,
-        description,
+        qty,
       });
       res.status(200).send({
         message: "Successfully Added",
@@ -48,6 +48,7 @@ module.exports = {
           "distributor",
           "description",
           "picture",
+          "qty"
         ],
       });
       res.status(200).send(products);
@@ -164,13 +165,14 @@ module.exports = {
 
   update: async (req, res) => {
     try {
-      const { productName, distributor, description } = req.body;
+      const { productName, distributor, description, qty } = req.body;
 
       await product.update(
         {
           productName,
           distributor,
           description,
+          qty,
         },
         {
           where: { id: req.params.id },

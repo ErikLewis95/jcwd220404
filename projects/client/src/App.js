@@ -1,10 +1,10 @@
 import { Routes, Route } from "react-router-dom"
-import { LandingPage } from "./pages/LandingPage";
-import { AccountPage } from "./pages/AccountPage";
-import { NotificationPage } from "./pages/NotificationPage";
-import { TransactionPage } from "./pages/TransactionPage";
-import { CategoryPage } from "./pages/CategoryPage";
-import { CartPage } from "./pages/CartPage";
+import { LandingPage } from "./pages/user/LandingPage";
+import { AccountPage } from "./pages/user/AccountPage";
+import { NotificationPage } from "./pages/user/NotificationPage";
+import { TransactionPage } from "./pages/user/TransactionPage";
+import { CategoryPage } from "./pages/user/CategoryPage";
+import { CartPage } from "./pages/user/CartPage";
 
 function App() {
   return (
