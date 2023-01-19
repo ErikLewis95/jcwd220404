@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Center,
@@ -16,11 +16,19 @@ import {
   Image,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
+import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
+import { cartSync } from "../../redux/cartSlice";
+import { addCart } from "../../redux/userSlice";
 
 export const MenuComp = () => {
   const [category, setCategory] = useState();
   const [product, setProduct] = useState();
+  const [address, setAddress] = useState();
+  const [state, setState] = useState("");
+  const { id, cart } = useSelector((state) => state.userSlice.value);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const tokenLocalStorage = localStorage.getItem("tokenUser");
 
   const getCategory = async () => {
@@ -28,8 +36,8 @@ export const MenuComp = () => {
       const res = await Axios.get(
         `${process.env.REACT_APP_API_BASE_URL}/product/listCategory`
       );
-      console.log(res.data);
       setCategory(res.data);
+      console.log(res.data);
     } catch (err) {
       console.log(err);
     }
@@ -44,8 +52,8 @@ export const MenuComp = () => {
       const res = await Axios.get(
         `${process.env.REACT_APP_API_BASE_URL}/product/list`
       );
-      console.log(res.data);
       setProduct(res.data);
+      console.log(res.data);
     } catch (err) {
       console.log(err);
     }
@@ -55,11 +63,60 @@ export const MenuComp = () => {
     getProduct();
   }, []);
 
+  const onAddCart = async (ProductId) => {
+    try {
+      if (!id) {
+        return Swal.fire({
+          icon: "error",
+          title: "Oooops ...",
+          text: "Login First",
+          timer: 2000,
+          customClass: {
+            container: "my-swal",
+          },
+        });
+      }
+      const result = await Axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/cart/create`,
+        {
+          UserId: id,
+          ProductId,
+        }
+      );
+      setState(result.data);
+      const res = await Axios.get(
+        `${process.env.REACT_APP_API_BASE_URL}/cart/findBy/${id}`
+      );
+      dispatch(cartSync(res.data));
+      dispatch(addCart(res.data));
+      getProduct();
+      Swal.fire({
+        icon: "success",
+        // title: "Good Job",
+        text: `Add to Cart Success`,
+        timer: 2000,
+        customClass: {
+          container: "my-swal",
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      Swal.fire({
+        icon: "error",
+        // title: "Oops...",
+        text: `Add Cart Failed`,
+        customClass: {
+          container: "my-swal",
+        },
+      });
+    }
+  };
+
   const onNavigate = () => {
     if (!tokenLocalStorage) {
       navigate("/account");
     } else {
-      navigate("/cart");
+      navigate(`/cart`);
     }
   };
 
@@ -109,14 +166,15 @@ export const MenuComp = () => {
                   boxSize={"50px"}
                   src={`${process.env.REACT_APP_API_BASE_URL}/` + item.picture}
                 />
-                <CardHeader>
-                  <Text size="sm">{item.productName}</Text>
-                </CardHeader>
                 <CardBody>
-                  <Text fontSize={"xs"}>Price</Text>
+                  <Text as={"b"} size="sm">
+                    {item.productName}
+                  </Text>
+                  <Text fontSize={"xs"}>{item.Price?.productPrice}</Text>
+                  <Text>Stok</Text>
                 </CardBody>
                 <CardFooter>
-                  <Button onClick={onNavigate}>
+                  <Button onClick={() => onAddCart(item.id)}>
                     <AddIcon />
                     Cart
                   </Button>

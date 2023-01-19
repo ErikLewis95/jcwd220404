@@ -8,6 +8,8 @@ const { Op } = require("sequelize");
 const transporter = require("../../middleware/transporter");
 const fs = require("fs");
 const handlebars = require("handlebars");
+const secretKey = process.env.SECRET_KEY;
+const urlReset = process.env.URL_RESETPASS;
 
 module.exports = {
   register: async (req, res) => {
@@ -41,11 +43,9 @@ module.exports = {
         UserId: data.id,
       });
 
-      const token = jwt.sign(
-        { phoneNumber: phoneNumber },
-        "jcwd2204"
-        // { expiresIn: "1h" }
-      );
+      const token = jwt.sign({ phoneNumber: phoneNumber }, secretKey, {
+        expiresIn: "1h",
+      });
 
       const tempEmail = fs.readFileSync("./template/codeotp.html", "utf-8");
       const tempCompile = handlebars.compile(tempEmail);
@@ -62,12 +62,11 @@ module.exports = {
       });
 
       res.status(200).send({
-        massage: "Register Succes",
+        message: "OTP code sent, please verify your Account",
         data,
         token,
       });
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
@@ -129,7 +128,7 @@ module.exports = {
         raw: true,
       });
 
-      const token = jwt.sign({ phoneNumber, email }, "jcwd2204", {
+      const token = jwt.sign({ phoneNumber, email }, secretKey, {
         expiresIn: "1h",
       });
 
@@ -148,7 +147,7 @@ module.exports = {
       });
 
       res.status(200).send({
-        massage: "Please check your Email for OTP Code",
+        message: "Please check your Email for OTP Code",
         data,
         token,
       });
@@ -160,7 +159,7 @@ module.exports = {
   login: async (req, res) => {
     try {
       const { phoneEmail, password, id, isVerified } = req.body;
-
+      console.log(req.body);
       // if (isVerified === 0) {
       //   const code_otp = Math.floor(100000 + Math.random() * 900000).toString();
       //   const salt = await bcrypt.genSalt(10);
@@ -287,7 +286,7 @@ module.exports = {
       if (isAccountExist === null) throw "Account not found";
       else if (isAccountExist.status === false) throw "Your Account is blocked";
 
-      const token = jwt.sign({ email: isAccountExist.email }, "jcwd2204", {
+      const token = jwt.sign({ email: isAccountExist.email }, secretKey, {
         expiresIn: "1h",
       });
 
@@ -295,7 +294,7 @@ module.exports = {
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
         email: isAccountExist.email,
-        link: `http://localhost:3000/resetPassword/${token}`,
+        link: `${urlReset}/resetPassword/${token}`,
       });
 
       await transporter.sendMail({
@@ -307,7 +306,9 @@ module.exports = {
 
       res
         .status(200)
-        .send("Send email request reset password succes, open your email");
+        .send(
+          "Send email request reset password success, please open your email"
+        );
     } catch (err) {
       res.status(400).send(err);
     }
@@ -336,7 +337,8 @@ module.exports = {
       );
 
       res.status(200).send({
-        message: "success",
+        message: "Update success",
+
         data,
         data2,
       });
@@ -362,7 +364,9 @@ module.exports = {
         }
       );
 
-      res.status(200).send({ data });
+      res.status(200).send({
+        data,
+      });
     } catch (err) {
       res.status(400).send(err);
     }
@@ -403,9 +407,10 @@ module.exports = {
       //   subject: "Verifikasi akun",
       //   html: tempResult,
       // });
-      res.status(200).send({ data });
+      res.status(200).send({
+        data,
+      });
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },

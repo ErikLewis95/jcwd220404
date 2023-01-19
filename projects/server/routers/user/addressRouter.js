@@ -4,8 +4,9 @@ const { addressController } = require("../../controllers/index");
 require("dotenv/config");
 
 router.post("/create/:id", addressController.newAddress);
-router.get("/addressById/:id", addressController.addressById);
 router.post("/findById/:id", addressController.findAddressById);
+router.get("/addressById/:id", addressController.addressById);
+router.get("/findDefault/:id", addressController.findDefault);
 router.patch("/updateAddress/:id", addressController.updateAddress);
 router.patch("/setDefault/:id", addressController.setDefault);
 router.delete("/remove/:id", addressController.deleteAddress);

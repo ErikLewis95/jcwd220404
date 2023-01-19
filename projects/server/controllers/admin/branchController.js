@@ -16,7 +16,7 @@ module.exports = {
       });
       return res.status(200).send({
         message: "Get Branch Address",
-        data: response,
+        response,
       });
     } catch (err) {
       res.status(400).send(err);
@@ -53,8 +53,8 @@ module.exports = {
         phoneNumber,
         // UserId: req.user.id,
       });
-      res.status(200).json({
-        message: "New Branch",
+      res.status(200).send({
+        message: "New Branch added",
         data: response,
       });
     } catch (err) {
@@ -98,7 +98,7 @@ module.exports = {
         }
       );
       const findData = await branch.findByPk(id);
-      res.status(200).json({
+      res.status(200).send({
         message: "Branch edited",
         data: findData,
       });
@@ -144,10 +144,13 @@ module.exports = {
       });
       return res.status(200).send({
         message: "Get Branch Address",
-        data: response,
+        response,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(400).send({
+        message: "Process error",
+        err,
+      });
     }
   },
 };
