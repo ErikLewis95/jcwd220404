@@ -16,7 +16,7 @@ module.exports = {
         order: [["defaultAddress", "DESC"]],
       });
       return res.status(200).send({
-        message: "Get User Address",
+        message: "User Address retrieved",
         data: response,
       });
     } catch (err) {
@@ -63,11 +63,11 @@ module.exports = {
         district,
         lattitude,
         longitude,
-        defaultAddress: true,
+        defaultAddress: false,
         UserId: req.params.id,
       });
       res.status(200).json({
-        message: "New Address",
+        message: "New Address created",
         data: response,
       });
     } catch (err) {
@@ -122,7 +122,7 @@ module.exports = {
         }
       );
       const findData = await address.findByPk(id);
-      res.status(200).json({
+      res.status(200).send({
         message: "Address edited",
         data: findData,
       });
@@ -192,12 +192,12 @@ module.exports = {
             },
           }
         );
-        res.status(200).json({
+        res.status(200).send({
           message: "success",
         });
       }
-      res.status(200).json({
-        message: "set as default",
+      res.status(200).send({
+        message: "Address set as default",
         data: findDefault,
       });
     } catch (err) {
@@ -214,8 +214,26 @@ module.exports = {
         },
       });
       return res.status(200).send({
-        message: "Get User Address",
+        message: "Data retrieved",
         data: response,
+      });
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  findDefault: async (req, res) => {
+    try {
+      const defaultAdd = await address.findOne({
+        where: {
+          defaultAddress: 1,
+          UserId: req.params.id,
+        },
+        raw: true,
+      });
+      res.status(200).send({
+        message: "Default Address Found",
+        defaultAdd,
       });
     } catch (err) {
       res.status(400).send(err);

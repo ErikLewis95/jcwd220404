@@ -6,6 +6,8 @@ require("dotenv/config");
 
 router.post("/create", productController.create);
 router.post("/createCategory", productController.createCategory);
+router.post("/createPrice", productController.createPrice);
+router.post("/createMulti", productController.createMultiCategory);
 router.post(
   "/single-uploaded/:id",
   multerUpload.single("file"),

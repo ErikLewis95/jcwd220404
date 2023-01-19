@@ -3,24 +3,33 @@ const db = require("../../models");
 const product = db.Product;
 const price = db.Price;
 const category = db.Category;
+const productCategory = db.Product_Category;
 
 module.exports = {
   create: async (req, res) => {
     try {
       const { productName, distributor, description } = req.body;
 
-      if (!productName && !distributor && !description) throw "required field";
+      if (
+        !productName &&
+        // !distributor &&
+        !description
+      )
+        throw "required field";
 
       await product.create({
         productName,
-        distributor,
+        // distributor,
         description,
       });
       res.status(200).send({
         message: "Successfully Added",
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(400).send({
+        message: "Process error",
+        err,
+      });
     }
   },
 
@@ -35,7 +44,10 @@ module.exports = {
         message: "Successfully Added",
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(400).send({
+        message: "Process error",
+        err,
+      });
     }
   },
 
@@ -45,10 +57,11 @@ module.exports = {
         attributes: [
           "id",
           "productName",
-          "distributor",
+          // "distributor",
           "description",
           "picture",
         ],
+        include: [{ model: price }],
       });
       res.status(200).send(products);
     } catch (err) {
@@ -140,8 +153,8 @@ module.exports = {
         },
       });
       console.log(req.params.id);
-      const users = await product.findAll();
-      res.status(200).send(users);
+      const deleteProduct = await product.findAll();
+      res.status(200).send(deleteProduct);
     } catch (err) {
       res.status(400).send(err);
     }
@@ -155,8 +168,8 @@ module.exports = {
         },
       });
       console.log(req.params.id);
-      const users = await category.findAll();
-      res.status(200).send(users);
+      const deleteCategory = await category.findAll();
+      res.status(200).send(deleteCategory);
     } catch (err) {
       res.status(400).send(err);
     }
@@ -176,8 +189,8 @@ module.exports = {
           where: { id: req.params.id },
         }
       );
-      const users = await product.findOne({ where: { id: req.params.id } });
-      res.status(200).send(users);
+      const edit = await product.findOne({ where: { id: req.params.id } });
+      res.status(200).send(edit);
     } catch (err) {
       res.status(400).send(err);
     }
@@ -194,8 +207,11 @@ module.exports = {
           where: { id: req.params.id },
         }
       );
-      const users = await category.findOne({ where: { id: req.params.id } });
-      res.status(200).send(users);
+      const edit = await category.findOne({ where: { id: req.params.id } });
+      res.status(200).send({
+        message: "Update success",
+        edit,
+      });
     } catch (err) {
       res.status(400).send(err);
     }
@@ -341,8 +357,33 @@ module.exports = {
     }
   },
 
-  stock: async (req, res) => {
+  createPrice: async (req, res) => {
     try {
+      const { productPrice, startDate, endDate, ProductId } = req.body;
+      await price.create({
+        productPrice,
+        startDate,
+        endDate,
+        ProductId,
+      });
+      res.status(200).send({
+        message: "Success Added",
+      });
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  createMultiCategory: async (req, res) => {
+    try {
+      const { CategoryId, ProductId } = req.body;
+      await productCategory.create({
+        CategoryId,
+        ProductId,
+      });
+      res.status(200).send({
+        message: "Success added",
+      });
     } catch (err) {
       res.status(400).send(err);
     }
